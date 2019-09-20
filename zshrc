@@ -144,8 +144,8 @@ fi
 
 # tmux alias
 if (( $+commands[tmux] )) ; then
-  alias tma="tmux at"
-  alias tmat="tmux at -t"
+  alias tma="tmux at -d"
+  alias tmat="tmux at -dt"
   alias tnew="tmux new -s"
 fi
 # Directory Stack alias
