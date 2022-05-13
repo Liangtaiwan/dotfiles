@@ -19,10 +19,10 @@ if-shell "[[ `tmux -V | cut -d' ' -f2` -lt 2.4 ]]" \
 set -g history-limit 10000
 
 set-option -g default-shell $SHELL
-# set-option -g default-command "${SHELL}"
+set-option -g default-command "${SHELL}"
 
 # new feature in tmux 2.1 with new ncurses
-# set -g default-terminal "tmux-256color"
+#set -g default-terminal "tmux-256color"
 set -g default-terminal "screen-256color" # + "tmux -2" => 256 color
 # true color support
 set -ga terminal-overrides ",xterm-256color:Tc,screen-256color:Tc,tmux-256color:Tc"
@@ -31,8 +31,7 @@ unbind C-b
 unbind l
 set -g prefix C-a
 bind a send-prefix
-bind -n C-q send-prefix
-# bind C-a last-window
+bind C-a last-window
 bind j command-prompt -p "join pane from:"  "join-pane -s '%%'"
 bind b break-pane
 bind -n C-M-h swap-window -t -1
@@ -86,32 +85,59 @@ set -g bell-action none
 set -g visual-bell off
 
 # statusbar
-set -g status-interval 1
-set -g status-justify left
-set -g status-left-length 20
-set -g status-left ' #[fg=blue,bold]#(hostname | cut -b -16)#[default] | '
-set -g status-right ' | #[fg=yellow,bold]%H:%M:%S #[fg=blue]%a %Y-%m-%d '
+set -g status on
+set -g status-position top
 
-# default statusbar colors
-set -g status-style bg=colour235,fg=red
+# Background color
+# set -g status-style bg=colour52,fg=colour230,bold
+set -g status-style bg=colour12,fg=colour236,bold
 
-# default window title colors
-setw -g window-status-style fg=white
+# Right and left parts
+set -g status-left-length 30
+set -g status-right-length 50
+# set -g status-left " \u25CA #S "
+# set -g status-right "\uE0B3 %R \uE0B3 %d.%m.%y \uE0B3 #h "
+# set -g status-left " #h | #S "
+# set -g status-right " %R | %d.%m.%y "
+set -g status-left " #h (#S) "
+set -g status-right " %R | %d.%m.%y "
 
-# active window title colors
-setw -g window-status-current-style fg=magenta
-
-# window activity notify color
-setw -g window-status-activity-style fg=green
-
-# Window options
-setw -g clock-mode-colour blue
-setw -g clock-mode-style 24
-setw -g visual-activity off
-setw -g monitor-activity on
-setw -g xterm-keys on
-setw -g automatic-rename on
-setw -g aggressive-resize on
+# Window lists
+# set -g status-justify left
+# set -g window-status-separator " "
+# set -g window-status-current-format "#[bg=default,reverse]\uE0B0#[bold] #I:#W #[noreverse]\uE0B0"
+# set -g window-status-format "\uE0B1 #I:#W \uE0B1"
+set -g status-justify centre
+set -g window-status-separator ""
+set -g window-status-current-format "#[bg=default,reverse,bold] #I:#W #[noreverse]"
+set -g window-status-format " #I:#W "
+# set-option -g status-position top 
+# set -g status-interval 1
+# set -g status-justify left
+# set -g status-left-length 20
+# set -g status-left ' #[fg=blue,bold]#(hostname | cut -b -16)#[default] | '
+# set -g status-right ' | #[fg=yellow,bold]%H:%M:%S #[fg=blue]%a %Y-%m-%d '
+# 
+# # default statusbar colors
+# set -g status-style bg=colour235,fg=red
+# 
+# # default window title colors
+# setw -g window-status-style fg=white
+# 
+# # active window title colors
+# setw -g window-status-current-style fg=magenta
+# 
+# # window activity notify color
+# setw -g window-status-activity-style fg=green
+# 
+# # Window options
+# setw -g clock-mode-colour blue
+# setw -g clock-mode-style 24
+# setw -g visual-activity off
+# setw -g monitor-activity on
+# setw -g xterm-keys on
+# setw -g automatic-rename on
+# setw -g aggressive-resize on
 
 # Mouse mode (tmux 2.2+)
 set -g mouse on
