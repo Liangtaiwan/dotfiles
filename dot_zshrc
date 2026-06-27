@@ -44,37 +44,49 @@ elif (( $+commands[ag] )); then
   export FZF_DEFAULT_COMMAND='ag -l -g ""'
 fi
 
-if ! [[ -f "${HOME}/.zplug/init.zsh" ]]; then
-  curl -sL https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [[ ! -f "${ZINIT_HOME}/zinit.zsh" ]]; then
+  command mkdir -p "$(dirname "${ZINIT_HOME}")"
+  command git clone --depth 1 https://github.com/zdharma-continuum/zinit "${ZINIT_HOME}"
 fi
-zstyle :zplug:tag depth 1
-source "${HOME}/.zplug/init.zsh"
+source "${ZINIT_HOME}/zinit.zsh"
 
-zplug "zplug/zplug"
-zplug "mafredri/zsh-async", use:async.zsh
-zplug "leomao/vim.zsh", use:vim.zsh, defer:1
-zplug "romkatv/powerlevel10k", as:theme, depth:1
+zinit ice depth"1" pick"async.zsh"
+zinit light mafredri/zsh-async
+
+zinit ice depth"1" pick"vim.zsh"
+zinit light leomao/vim.zsh
+
+zinit ice depth"1"
+zinit light romkatv/powerlevel10k
+
 export ENHANCD_DISABLE_HOME=1
 export ENHANCD_DOT_ARG='.'
-zplug "b4b4r07/enhancd", use:init.sh
+zinit ice depth"1" pick"init.sh"
+zinit light b4b4r07/enhancd
 
 if [[ -f /etc/arch-release ]]; then
   if [[ -d /usr/share/zsh/plugins/zsh-syntax-highlighting ]]; then
-    zplug "/usr/share/zsh/plugins/zsh-syntax-highlighting", from:local, defer:3
+    zinit ice wait lucid
+    zinit light /usr/share/zsh/plugins/zsh-syntax-highlighting
   fi
 else
-  zplug "zsh-users/zsh-completions", use:"*.plugin.zsh"
-  zplug "so-fancy/diff-so-fancy", as:command, use:diff-so-fancy
-  zplug "zsh-users/zsh-syntax-highlighting", use:"*.plugin.zsh", defer:3
+  zinit ice depth"1" blockf
+  zinit light zsh-users/zsh-completions
+
+  zinit ice depth"1" as"command" pick"diff-so-fancy"
+  zinit light so-fancy/diff-so-fancy
+
+  zinit ice depth"1" wait lucid
+  zinit light zsh-users/zsh-syntax-highlighting
 fi
 
 export ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 
-if ! zplug check --verbose; then
-  zplug install
-fi
-
-zplug load
+# Initialize the completion system (previously handled by `zplug load`)
+autoload -Uz compinit
+compinit
+zinit cdreplay -q
 
 #############################
 # Options
