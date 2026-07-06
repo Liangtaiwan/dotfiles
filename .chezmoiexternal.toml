@@ -1,0 +1,11 @@
+# External git repos that chezmoi clones/pulls (not vendored into the source tree).
+#
+# claude-statusline: the source for the Claude Code status line. It's its own
+# repo, so chezmoi just keeps a checkout in ~/claude-statusline. The binary is
+# built from it by run_onchange_after_install-claude-statusline.sh.tmpl, and it
+# is wired into ~/.claude/settings.json by dot_claude/private_settings.json.tmpl.
+["claude-statusline"]
+    type = "git-repo"
+    url = "https://github.com/Liangtaiwan/claude-statusline.git"
+    refreshPeriod = "168h"
+    pull.args = ["--ff-only"]

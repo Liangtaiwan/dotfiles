@@ -1,0 +1,33 @@
+#!/bin/bash
+# Build the claude-statusline binary and install it to ~/.claude/bin.
+#
+# This replaces ~/claude-statusline/install.sh's build step. The statusLine
+# wiring in settings.json is handled declaratively by
+# dot_claude/private_settings.json.tmpl, so it is intentionally NOT done here.
+#
+# run_onchange_ means chezmoi re-runs this only when the script's rendered
+# content changes. The Cargo.lock hash below is embedded so a dependency/source
+# bump (after `chezmoi update` pulls the external) retriggers a rebuild.
+# Cargo.lock: {{ $lock := joinPath .chezmoi.homeDir "claude-statusline" "Cargo.lock" -}}
+{{- if stat $lock }}{{ include $lock | sha256sum }}{{ else }}bootstrap{{ end }}
+set -euo pipefail
+
+repo="{{ .chezmoi.homeDir }}/claude-statusline"
+bin_dir="{{ .chezmoi.homeDir }}/.claude/bin"
+
+if [ ! -d "$repo" ]; then
+    echo "claude-statusline: $repo not found (external not cloned yet); skipping." >&2
+    exit 0
+fi
+
+if ! command -v cargo >/dev/null 2>&1; then
+    echo "claude-statusline: cargo/Rust not found; skipping build (install from https://rustup.rs)." >&2
+    exit 0
+fi
+
+echo "claude-statusline: building release binary..."
+cargo build --release --manifest-path "$repo/Cargo.toml"
+
+mkdir -p "$bin_dir"
+install -m 0755 "$repo/target/release/claude-status" "$bin_dir/claude-status"
+echo "claude-statusline: installed $bin_dir/claude-status"
