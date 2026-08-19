@@ -175,6 +175,13 @@ if (( $+commands[tmux] )) ; then
   alias tnew="tmux new -s"
   alias tml="tmux list-session"
 fi
+# Slurm alias
+if (( $+commands[squeue] )) ; then
+  alias sq='squeue'
+  alias squ='squeue -u $USER'
+  alias sql='squeue -o "%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R"'
+  alias squl='squeue -u $USER -o "%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R"'
+fi
 # Directory Stack alias
 alias dirs='dirs -v'
 alias ds='dirs'
