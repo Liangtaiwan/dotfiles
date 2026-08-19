@@ -1,5 +1,10 @@
 {{- $name := promptString "name" -}}
 {{- $email := promptString "email" -}}
+encryption = "age"
+
+[age]
+  passphrase = true
+
 [data]
   name = "{{ $name }}"
   email = "{{ $email }}"

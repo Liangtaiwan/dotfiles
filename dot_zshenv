@@ -40,6 +40,11 @@ fi
 
 path=($path[@] "$HOME/.local/bin")
 
+# secrets deployed by chezmoi (age-encrypted in the repo)
+if [[ -f "${HOME}/.zshenv.secrets" ]]; then
+  source "${HOME}/.zshenv.secrets"
+fi
+
 if [[ -f "${HOME}/.zshenv.local" ]]; then
   source "${HOME}/.zshenv.local"
 fi
