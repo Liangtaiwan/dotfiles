@@ -163,9 +163,13 @@ if [[ `vim --version 2> /dev/null | grep -- +clientserver` ]] ; then
   alias vim='vim --servername vim'
 fi
 alias vi='vim'
-alias v='vim'
 if (( $+commands[nvim] )) ; then
-  alias v='nvim'
+  alias nv='nvim'
+fi
+
+# claude alias
+if (( $+commands[claude] )) ; then
+  alias c='claude'
 fi
 
 # tmux alias
