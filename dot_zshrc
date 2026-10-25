@@ -310,6 +310,26 @@ fi
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Sync and activate the monorepo venv on entering it (worktrees included),
+# deactivate on leaving.
+function _monorepo_venv() {
+  local root
+  root=$(git rev-parse --show-toplevel 2>/dev/null)
+  if [[ -n $root ]] && grep -qx 'name = "monorepo"' $root/pyproject.toml 2>/dev/null; then
+    [[ $VIRTUAL_ENV == $root/.venv ]] && return
+    (( $+functions[deactivate] )) && deactivate
+    uv sync -q --project $root && source $root/.venv/bin/activate && _MONOREPO_VENV=$VIRTUAL_ENV
+  elif [[ -n $_MONOREPO_VENV && $VIRTUAL_ENV == $_MONOREPO_VENV ]]; then
+    deactivate
+    unset _MONOREPO_VENV
+  fi
+}
+if (( $+commands[uv] )) ; then
+  autoload -Uz add-zsh-hook
+  add-zsh-hook chpwd _monorepo_venv
+  _monorepo_venv
+fi
+
 # load custom settings
 if [[ -f "${HOME}/.zshrc.local" ]]; then
   source "${HOME}/.zshrc.local"
