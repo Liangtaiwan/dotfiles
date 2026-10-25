@@ -321,7 +321,7 @@ function _monorepo_venv() {
   if [[ -n $root ]] && grep -qx 'name = "monorepo"' $root/pyproject.toml 2>/dev/null; then
     [[ $VIRTUAL_ENV == $root/.venv ]] && return
     (( $+functions[deactivate] )) && deactivate
-    uv sync --project $root && source $root/.venv/bin/activate && _MONOREPO_VENV=$VIRTUAL_ENV
+    uv sync -q --project $root && source $root/.venv/bin/activate && _MONOREPO_VENV=$VIRTUAL_ENV
   elif [[ -n $_MONOREPO_VENV && $VIRTUAL_ENV == $_MONOREPO_VENV ]]; then
     deactivate
     unset _MONOREPO_VENV
@@ -330,13 +330,7 @@ function _monorepo_venv() {
 if (( $+commands[uv] )) ; then
   autoload -Uz add-zsh-hook
   add-zsh-hook chpwd _monorepo_venv
-  # Defer the first run to the first prompt so uv's output doesn't break
-  # the p10k instant prompt.
-  function _monorepo_venv_init() {
-    add-zsh-hook -d precmd _monorepo_venv_init
-    _monorepo_venv
-  }
-  add-zsh-hook precmd _monorepo_venv_init
+  _monorepo_venv
 fi
 
 # load custom settings
