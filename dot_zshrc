@@ -165,6 +165,9 @@ fi
 alias vi='vim'
 if (( $+commands[nvim] )) ; then
   alias nv='nvim'
+  alias e='nvim'
+else
+  alias e='vim'
 fi
 
 # claude alias
