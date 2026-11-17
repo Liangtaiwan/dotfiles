@@ -48,3 +48,8 @@ fi
 if [[ -f "${HOME}/.zshenv.local" ]]; then
   source "${HOME}/.zshenv.local"
 fi
+
+# cluster name for prompt/tmux; override in ~/.zshenv.local, else the kube context
+if [[ -z "$CLUSTER_NAME" && -r ~/.kube/config ]]; then
+  export CLUSTER_NAME=${${(M)${(f)"$(<~/.kube/config)"}:#current-context: *}#current-context: }
+fi
